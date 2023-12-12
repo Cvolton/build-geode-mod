@@ -54,6 +54,9 @@ runs:
           if [ -f "./artifacts/geode-build-mac/$mod" ]; then
             PACKAGE_ARGS="$PACKAGE_ARGS ./artifacts/geode-build-mac/$mod"
           fi
+          if [ -f "./artifacts/geode-build-linux/$mod" ]; then
+            PACKAGE_ARGS="$PACKAGE_ARGS ./artifacts/geode-build-linux/$mod"
+          fi
           ARG_LIST=($PACKAGE_ARGS)
           # why does it merge into the first one instead of just an output..
           FIRST="${ARG_LIST[0]}"
@@ -74,4 +77,10 @@ runs:
       if: ${{ inputs.delete-artifacts }}
       with:
           name: geode-build-mac
+          failOnError: false
+        
+    - uses: geekyeggo/delete-artifact@v2
+      if: ${{ inputs.delete-artifacts }}
+      with:
+          name: geode-build-linux
           failOnError: false
