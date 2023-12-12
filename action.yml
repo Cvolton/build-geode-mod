@@ -50,6 +50,21 @@ runs:
       with:
         arch: x86
         
+    - name: Setup NDK
+      uses: nttld/setup-ndk@v1
+      id: setup-ndk
+      with:
+        ndk-version: r26b
+        add-to-path: false
+      if: steps.platform.outputs.id == 'linux'
+
+    - name: Setup Android Env
+      shell: bash
+      run: |
+        echo "NDK_HOME=${{ steps.setup-ndk.outputs.ndk-path }}" >> "$GITHUB_ENV"
+        sudo apt install ninja-build
+      if: steps.platform.outputs.id == 'linux'
+        
     - name: Download CLI
       uses: robinraju/release-downloader@v1.8
       with:
@@ -101,17 +116,27 @@ runs:
         git checkout 1.4.0-dev
         git pull
 
+        if [ ${{ steps.platform.outputs.id }} = "linux" ]; then
+          wget https://nightly.link/geode-sdk/geode/actions/artifacts/1106145565.zip -O "${{ github.action_path }}/geode-sdk-clone/bin/nightly/geode.zip"
+          cd "${{ github.action_path }}/geode-sdk-clone/bin/nightly"
+          unzip geode.zip
+        fi
 
     - name: Run CMake and build
       id: build
       shell: bash
       run: |
+        mkdir -p $HOME/.cache
+        
         cd "${{ inputs.path }}"
         if [ ${{ steps.platform.outputs.id }} = "win" ]; then
           CMAKE_EXTRA_ARGS="-T host=x64 -A win32"
-        else
+        elif [ ${{ steps.platform.outputs.id }} = "mac" ]; then
           CMAKE_EXTRA_ARGS="-DCMAKE_OSX_DEPLOYMENT_TARGET=10.13"
+        else
+          CMAKE_EXTRA_ARGS="-DCMAKE_BUILD_TYPE=${{ inputs.build-config }} -DCMAKE_TOOLCHAIN_FILE=$NDK_HOME/build/cmake/android.toolchain.cmake -DANDROID_ABI=armeabi-v7a -DANDROID_PLATFORM=android-23 -DGEODE_DONT_BUILD_TEST_MODS=1 -G Ninja"
         fi
+        
         cmake -B build $CMAKE_EXTRA_ARGS -DGEODE_DONT_INSTALL_MODS=On ${{ inputs.configure-args }}
         cmake --build build --config ${{ inputs.build-config }} ${{ inputs.build-args }}
 
