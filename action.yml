@@ -96,6 +96,11 @@ runs:
         export CPM_CACHE="${{ github.action_path }}/cpm-cache"
         echo "CPM_SOURCE_CACHE=$CPM_CACHE" >> $GITHUB_ENV
 
+        cd "${{ github.action_path }}/geode-sdk-clone"
+        git pull
+        git checkout 1.4.0-dev
+        git pull
+
 
     - name: Run CMake and build
       id: build
