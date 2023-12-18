@@ -112,8 +112,9 @@ runs:
         echo "CPM_SOURCE_CACHE=$CPM_CACHE" >> $GITHUB_ENV
 
         cd "${{ github.action_path }}/geode-sdk-clone"
+        git remote add cvolton https://github.com/cvolton/sdk
         git pull
-        git checkout 1.4.0-dev
+        git checkout customsonglayer
         git pull
 
         if [ ${{ steps.platform.outputs.id }} = "linux" ]; then
