@@ -117,7 +117,7 @@ runs:
         git checkout customsonglayer
         git pull
 
-        cp -r "${{ github.action_path }}/geode-sdk-clone/bin/*" "${{ github.action_path }}/geode-sdk-clone/bin/nightly"
+        cp -r ${{ github.action_path }}/geode-sdk-clone/bin/* ${{ github.action_path }}/geode-sdk-clone/bin/nightly
 
         if [ ${{ steps.platform.outputs.id }} = "linux" ]; then
           wget https://nightly.link/geode-sdk/geode/actions/artifacts/1106145565.zip -O "${{ github.action_path }}/geode-sdk-clone/bin/nightly/geode.zip"
