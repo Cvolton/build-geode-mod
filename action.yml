@@ -114,7 +114,6 @@ runs:
         cd "${{ github.action_path }}/geode-sdk-clone"
         git remote add cvolton https://github.com/cvolton/sdk
         git fetch cvolton
-        git pull
         git checkout customsonglayer
         git pull
 
