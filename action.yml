@@ -117,6 +117,8 @@ runs:
         git checkout customsonglayer
         git pull
 
+        ls "${{ github.action_path }}/geode-sdk-clone/bin/"
+        
         cp -r ${{ github.action_path }}/geode-sdk-clone/bin/* ${{ github.action_path }}/geode-sdk-clone/bin/nightly
 
         if [ ${{ steps.platform.outputs.id }} = "linux" ]; then
